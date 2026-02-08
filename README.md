@@ -236,16 +236,16 @@ Além dos testes unitários, o projeto possui testes ***end-to-end (E2E)*** que 
 
 **Os testes E2E validam os seguintes fluxos:**
 
-✅ Autenticação via JWT (POST /auth/login)
-✅ Criação de mensagem autenticada (POST /messages)
-✅ Busca de mensagem por ID (GET /messages/:id)
-✅ Atualização de status com transições válidas:
-    * SENT → RECEIVED
-    * RECEIVED → READ
-✅ Atualização de status com input case-insensitive (received, read)
-✅ Filtro de mensagens por remetente (case-insensitive)
-✅ Filtro de mensagens por período (YYYY-MM-DD)
-✅ Garantia de que mensagens criadas aparecem nos filtros
+* ✅ Autenticação via JWT (POST /auth/login)
+* ✅ Criação de mensagem autenticada (POST /messages)
+* ✅ Busca de mensagem por ID (GET /messages/:id)
+* ✅ Atualização de status com transições válidas:
+    SENT → RECEIVED
+   RECEIVED → READ
+* ✅ Atualização de status com input case-insensitive (received, read)
+* ✅ Filtro de mensagens por remetente (case-insensitive)
+* ✅ Filtro de mensagens por período (YYYY-MM-DD)
+* ✅ Garantia de que mensagens criadas aparecem nos filtros
 
 Esses testes asseguram que a API funciona corretamente do ponto de vista do consumidor final.
 
