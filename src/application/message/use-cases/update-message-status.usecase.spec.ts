@@ -14,7 +14,6 @@ describe('UpdateMessageStatusUseCase', () => {
     };
 
     const useCase = new (UpdateMessageStatusUseCase as any)(repo);
-
     const result = await useCase.execute('id', MessageStatus.READ);
 
     expect(result.status).toBe(MessageStatus.READ);
@@ -27,7 +26,6 @@ describe('UpdateMessageStatusUseCase', () => {
     };
 
     const useCase = new (UpdateMessageStatusUseCase as any)(repo);
-
     await expect(useCase.execute('x', MessageStatus.READ)).rejects.toBeInstanceOf(NotFoundException);
   });
 });

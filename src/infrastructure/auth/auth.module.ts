@@ -17,7 +17,6 @@ import { JwtStrategy } from './jwt.strategy';
       useFactory: (config: ConfigService): JwtModuleOptions => {
         const secret = config.get<string>('JWT_SECRET') ?? 'super-secret-dev';
 
-        // 👇 aqui: segundos (number)
         const expiresRaw = config.get<string>('JWT_EXPIRES_IN') ?? '3600';
         const expiresIn = Number(expiresRaw);
 
