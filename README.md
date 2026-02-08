@@ -26,11 +26,13 @@ A API tem como função enviar, consultar e alterar status das mensagens, dispon
 * **class-validator / class-transformer**
 * **Jest (testes unitários)**
 * **Clean Architecture com Arquitetura Hexagonal (Domain / Application / Infrastructure / Interfaces)**
-* **Banco de dados? DynamoDb**
+* **Persistência: DynamoDB (NoSQL) com implementação via Repositories (Pattern).**
 
 ---
 
 ## 🧱 Arquitetura
+
+O projeto foi estruturado sob os princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é estritamente agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
 
 Organização em camadas:
 
