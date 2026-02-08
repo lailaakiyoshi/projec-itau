@@ -3,7 +3,8 @@
 
 ## 📌 Visão Geral
 
-Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagnes.Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
+Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagens. Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
+
 O projeto foi desenhado para ser **escalável** e **testável**, alcançando **100% de cobertura em testes unitários** e contemplando testes **End-to-End (E2E)** para fluxos críticos.
 
 ---
@@ -15,29 +16,27 @@ O projeto foi desenhado para ser **escalável** e **testável**, alcançando **1
 * [Endpoints da API](#-endpoints-da-api)
 * [Autenticação](#-autenticação)
 * [Regras de Negócio e Validações](#-regras-de-negócio-e-validações)
-* [Padronização de Erros e Logs](#-padronização-de-erros-e-logs)
-* [Como Executar o Projeto](#-como-executar-o-projeto)
-* [Testes (Unitários e E2E)](#-testes-automatizados)
+* [Padronização de Erros](#-padronização-de-erros)
 * [Logs e Observabilidade](#-logs-e-observabilidade)
+* [Como Executar o Projeto](#-como-executar-o-projeto)
+* [Testes Automatizados](#-testes-automatizados)
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **Node.js**
-* **NestJS**
-* **TypeScript**
-* **JWT (Autenticação)**
-* **class-validator / class-transformer**
-* **Jest (testes unitários)**
-* **Clean Architecture com Arquitetura Hexagonal (Domain / Application / Infrastructure / Interfaces)**
-* **Persistência: DynamoDB (NoSQL) com implementação via Repositories (Pattern).**
+* **Core:** Node.js, NestJS, TypeScript
+* **Segurança:** JWT (Autenticação)
+* **Validação:** class-validator / class-transformer
+* **Testes:** Jest, Supertest
+* **Arquitetura:** Clean Architecture (Domain / Application / Infrastructure / Interfaces)
+* **Persistência:** DynamoDB (NoSQL) com implementação via Repositories (Pattern).
 
 ---
 
 ## 🧱 Arquitetura
 
-Princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
+O projeto segue os princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
 
 **Organização em camadas:**
 
@@ -53,7 +52,7 @@ shared/
 
 * Alta testabilidade
 * Baixo acoplamento
-* Fácil evolução para banco real (DynamoDB, PostgreSQL, etc.)
+* ácil evolução para outros serviços e integrações.
 
 ---
 
@@ -71,16 +70,14 @@ shared/
 
 ## 🔐 Autenticação
 
-Todas os endpoints exigem autenticação via **JWT**.
+TTodos os endpoints (exceto login) exigem autenticação via **JWT.**
 
-**Login**
+**1. Realizar Login**
 
-```http
-POST /auth/login
-```
+```POST /auth/login
+Content-Type: application/json
 
-**Body:**
-```{
+{
   "username": "laila",
   "password": "123"
 }```
@@ -93,7 +90,7 @@ POST /auth/login
 }
 ```
 
-Use o token no header para chamar os endpoints:
+Use o token no header para chamar os endpoints protegidos: Authorization: Bearer <token>
 
 ```http
 Authorization: Bearer <token>
@@ -101,77 +98,39 @@ Authorization: Bearer <token>
 
 ---
 
-## ✅ Validações Implementadas
+## ✅ Regra de Negócio e Validações
 
-Regra de negócio: o status de uma mensagem segue obrigatoriamente o fluxo.
+1. **Máquina de Estados (Status)**
+O status de uma mensagem segue obrigatoriamente este fluxo:
 
 * ✅ `SENT → RECEIVED`
 * ✅ `RECEIVED → READ`
 * ❌ `SENT → READ` (inválido)
 
----
+2. **Filtros de Busca**
 
-Validações para mensagens por remetente:
+* **Exclusividade:** Apenas um tipo de filtro por vez (sender OU startDate + endDate). Se nenhum for informado, retorna 400.
 
-* Case-insensitive (`Laila`, `lAiLa`)
-* Espaços são ignorados (`"  laila  "`)
+* **Remetente:** Case-insensitive (Laila == lAiLa) e ignora espaços nas pontas.
 
----
+* **Datas:** Formato **YYYY-MM-DD.** Intervalo inclusivo. Ambos os campos são obrigatórios.
 
-## Regra de Negócios e Validações
+3. **Validações de Entrada (DTOs)**
+* **Global:** Remove campos desconhecidos e bloqueia payloads vazios.
 
-* Datas no formato **YYYY-MM-DD**
-* Intervalo **inclusivo**
-* `startDate` e `endDate` são obrigatórios juntos
-* Retorna array vazio se não houver mensagens no período
+* **Criação:**
 
+- content: Obrigatório, máx 1000 chars.
 
-Filtros: apenas **um tipo de filtro por vez**:
+- sender: Obrigatório, máx 80 chars.
 
-  * `sender`
-  * ou `startDate + endDate`
-* Se nenhum filtro for informado → **400**
-
-**Validação Global:**
-
-* Remove campos desconhecidos
-* Bloqueia payloads inválidos
-* Converte tipos automaticamente
-
-**Criação de Mensagem:**
-
-* `content`:
-
-  * obrigatório
-  * máximo de 1000 caracteres
-  * não aceita string vazia
-* `sender`:
-
-  * obrigatório
-  * máximo de 80 caracteres
-  * não aceita string vazia
-
-
-**Atualização de Status:**
-
-* Status obrigatório
-* Apenas valores do enum permitido
-* Conversão automática (`read` → `READ`)
-
-
-**Filtros de Query:**
-
-* `sender`: máximo 80 caracteres
-* `startDate` / `endDate`:
-
-  * formato `YYYY-MM-DD`
-  * validação de intervalo lógico
+* **Atualização:** Conversão automática de status (read → READ).
 
 ---
 
 ## ❌ Padronização de Erros
 
-Todas as respostas de erro seguem o mesmo formato:
+Todas as respostas de erro seguem o padrão RFC adaptado:
 
 ```json
 {
@@ -184,86 +143,12 @@ Todas as respostas de erro seguem o mesmo formato:
   "requestId": "c9878ee4-e54b-41ac-9a89-4a5dc627bb3b"
 }
 ```
-
 ---
 
-## 🚀 Como Executar o Projeto
+## 📊 **Logs e Observabilidade**
 
-```bash
-npm install
-npm run start:dev
-```
-
-API disponível em:
-
-```
-http://localhost:3000
-```
----
-
-## 🧪 Testes Automatizados
-
-* **21 testes unitários**
-* **100% de cobertura**:
-
-  * Statements
-  * Branches
-  * Functions
-  * Lines
-
-Rodar testes:
-
-```bash
-npm test
-```
-
-Rodar cobertura:
-
-```bash
-npm run test:cov
-```
-
----
-
- **Testes End-to-End (E2E)**
-
-Além dos testes unitários, o projeto possui testes ***end-to-end (E2E)*** que validam o fluxo completo da API, incluindo autenticação, regras de negócio e filtros.
-
-**Os testes E2E utilizam:**
-
-* Jest
-* Supertest
-
-**Os testes E2E validam os seguintes fluxos:**
-
-* ✅ Autenticação via JWT (POST /auth/login)
-* ✅ Criação de mensagem autenticada (POST /messages)
-* ✅ Busca de mensagem por ID (GET /messages/:id)
-* ✅ Atualização de status com transições válidas:
-    SENT → RECEIVED
-   RECEIVED → READ
-* ✅ Atualização de status com input case-insensitive (received, read)
-* ✅ Filtro de mensagens por remetente (case-insensitive)
-* ✅ Filtro de mensagens por período (YYYY-MM-DD)
-* ✅ Garantia de que mensagens criadas aparecem nos filtros
-
-Esses testes asseguram que a API funciona corretamente do ponto de vista do consumidor final.
-
-▶️ **Como rodar os testes E2E**
-
-```
-npm run test:e2e
-```
-
-Durante os testes E2E, as credenciais de autenticação são definidas automaticamente no ambiente de teste para garantir consistência e isolamento.
-
----
-
-## 📊 Logs e Observabilidade
-
-* Cada request recebe um **requestId**
-* Logs estruturados em **JSON**
-* Pronto para integração com **CloudWatch / Datadog / ELK**
+* Cada request recebe um **requestId** único.
+* Logs estruturados em **JSON**, prontos para **CloudWatch / Datadog / ELK.**
 
 Exemplo de log:
 
@@ -278,7 +163,55 @@ Exemplo de log:
   "requestId": "efe2afef-b9d0-4dc0-8cd8-4420200daf71"
 }
 ```
+
 ---
+
+## 🚀 Como Executar o Projeto
+
+```bash
+# Instalar dependências
+npm install
+
+# Rodar a aplicação
+npm run start:dev
+```
+
+**API disponível em:**
+
+```
+http://localhost:3000
+```
+---
+
+## 🧪 Testes Automatizados
+
+1. **Testes Unitários**
+Focam na lógica de domínio e regras de negócio.
+
+* **Quantidade:** 21 testes.
+* **Cobertura:** 100% (Statements, Branches, Functions, Lines).
+
+```bash
+npm test
+npm run test:cov
+```
+
+2. **Testes End-to-End (E2E)**
+Validam o fluxo completo da API, simulando o consumidor final com Supertest.
+
+**Cenários Cobertos:**
+* ✅ Autenticação via JWT.
+* ✅ CRUD completo de mensagens.
+* ✅ Validação de transições de status (SENT → RECEIVED → READ).
+* ✅ Filtros complexos (Case-insensitive e Datas).
+
+As credenciais de autenticação são injetadas automaticamente no ambiente de testes.
+
+```
+npm run test:e2e
+```
+---
+
 
 
 
