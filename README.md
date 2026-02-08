@@ -60,7 +60,13 @@ Todas os endpoints exigem autenticação via **JWT**.
 POST /auth/login
 ```
 
-Exemplo de resposta:
+***Body:***
+```{
+  "username": "laila",
+  "password": "123"
+}```
+
+***Exemplo de resposta:***
 
 ```json
 {
@@ -68,12 +74,25 @@ Exemplo de resposta:
 }
 ```
 
-Use o token no header:
+Use o token no header para chamar os endpoints:
 
 ```http
 Authorization: Bearer <token>
 ```
+---
 
+## 🚀 Como Executar o Projeto
+
+```bash
+npm install
+npm run start:dev
+```
+
+API disponível em:
+
+```
+http://localhost:3000
+```
 ---
 
 ### 🧪 Testes End-to-End (E2E)
@@ -253,20 +272,7 @@ npm run test:cov
 
 ---
 
-## 🚀 Como Executar o Projeto
 
-```bash
-npm install
-npm run start:dev
-```
-
-API disponível em:
-
-```
-http://localhost:3000
-```
-
----
 
 
 
