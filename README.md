@@ -1,19 +1,24 @@
 
-# 📬 Desafio Técnico – API de Mensagens (Node.js + NestJS)
+# 📬 Desafio Técnico – API de Mensagens 
 
 ## 📌 Visão Geral
 
-Esta aplicação é uma **API RESTful de mensagens**, desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados**, **autenticação JWT** e **testes automatizados com 100% de cobertura**.
+Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagnes.Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
+O projeto foi desenhado para ser **escalável** e **testável**, alcançando **100% de cobertura em testes unitários** e contemplando testes **End-to-End (E2E)** para fluxos críticos.
 
-A API tem como função enviar, consultar e alterar status das mensagens, disponibilizado pelos seguintes Endpoints:
+---
 
-| Método | Caminho                                             | Descrição                      | Respostas                                                                                                                                        |
-| ------ | --------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| POST   | `/messages`                                         | Cria uma nova mensagem         | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
-| GET    | `/messages/:id`                                     | Busca uma mensagem por ID      | **200** – Mensagem encontrada<br>**400** – ID inválido (não UUID)<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado              |
-| GET    | `/messages?sender=...`                              | Filtra mensagens por remetente | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
-| PATCH  | `/messages/:id/status`                              | Atualiza o status da mensagem  | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
-| GET    | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período    | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
+## 📑 Índice
+
+* [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+* [Arquitetura](#-arquitetura)
+* [Endpoints da API](#-endpoints-da-api)
+* [Autenticação](#-autenticação)
+* [Regras de Negócio e Validações](#-regras-de-negócio-e-validações)
+* [Padronização de Erros e Logs](#-padronização-de-erros-e-logs)
+* [Como Executar o Projeto](#-como-executar-o-projeto)
+* [Testes (Unitários e E2E)](#-testes-automatizados)
+* [Logs e Observabilidade](#-logs-e-observabilidade)
 
 ---
 
@@ -32,9 +37,9 @@ A API tem como função enviar, consultar e alterar status das mensagens, dispon
 
 ## 🧱 Arquitetura
 
-O projeto foi estruturado sob os princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é estritamente agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
+Princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
 
-Organização em camadas:
+**Organização em camadas:**
 
 ```
 domain/
@@ -44,7 +49,7 @@ interfaces/
 shared/
 ```
 
-Benefícios:
+**Benefícios:**
 
 * Alta testabilidade
 * Baixo acoplamento
@@ -52,23 +57,35 @@ Benefícios:
 
 ---
 
+## 🔐 Endpoints da Api
+
+| Método | Caminho                                             | Descrição                      | Respostas                                                                                                                                        |
+| ------ | --------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| POST   | `/messages`                                         | Cria uma nova mensagem         | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
+| GET    | `/messages/:id`                                     | Busca uma mensagem por ID      | **200** – Mensagem encontrada<br>**400** – ID inválido (não UUID)<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado              |
+| GET    | `/messages?sender=...`                              | Filtra mensagens por remetente | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
+| PATCH  | `/messages/:id/status`                              | Atualiza o status da mensagem  | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
+| GET    | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período    | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
+
+---
+
 ## 🔐 Autenticação
 
 Todas os endpoints exigem autenticação via **JWT**.
 
-### Login
+**Login**
 
 ```http
 POST /auth/login
 ```
 
-***Body:***
+**Body:**
 ```{
   "username": "laila",
   "password": "123"
 }```
 
-***Exemplo de resposta:***
+**Exemplo de resposta:**
 
 ```json
 {
@@ -81,57 +98,6 @@ Use o token no header para chamar os endpoints:
 ```http
 Authorization: Bearer <token>
 ```
----
-
-## 🚀 Como Executar o Projeto
-
-```bash
-npm install
-npm run start:dev
-```
-
-API disponível em:
-
-```
-http://localhost:3000
-```
----
-
-### 🧪 Testes End-to-End (E2E)
-
-Além dos testes unitários, o projeto possui testes ***end-to-end (E2E)*** que validam o fluxo completo da API, incluindo autenticação, regras de negócio e filtros.
-
-Os testes E2E utilizam:
-
-* Jest
-* Supertest
-
-Aplicação NestJS em memória (sem subir servidor real)
-
-## 📋 Cenários E2E Cobertos
-
-Os testes E2E validam os seguintes fluxos:
-
-✅ Autenticação via JWT (POST /auth/login)
-✅ Criação de mensagem autenticada (POST /messages)
-✅ Busca de mensagem por ID (GET /messages/:id)
-✅ Atualização de status com transições válidas:
-    * SENT → RECEIVED
-    * RECEIVED → READ
-✅ Atualização de status com input case-insensitive (received, read)
-✅ Filtro de mensagens por remetente (case-insensitive)
-✅ Filtro de mensagens por período (YYYY-MM-DD)
-✅ Garantia de que mensagens criadas aparecem nos filtros
-
-Esses testes asseguram que a API funciona corretamente do ponto de vista do consumidor final.
-
-▶️ Como rodar os testes E2E
-
-npm run test:e2e
-
-
-Durante os testes E2E, as credenciais de autenticação são definidas automaticamente no ambiente de teste para garantir consistência e isolamento.
-
 
 ---
 
@@ -152,14 +118,13 @@ Validações para mensagens por remetente:
 
 ---
 
-Validações para buscar mensagens por período:
+## Regra de Negócios e Validações
 
 * Datas no formato **YYYY-MM-DD**
 * Intervalo **inclusivo**
 * `startDate` e `endDate` são obrigatórios juntos
 * Retorna array vazio se não houver mensagens no período
 
----
 
 Filtros: apenas **um tipo de filtro por vez**:
 
@@ -167,17 +132,13 @@ Filtros: apenas **um tipo de filtro por vez**:
   * ou `startDate + endDate`
 * Se nenhum filtro for informado → **400**
 
----
-
-Validação Global:
+**Validação Global:**
 
 * Remove campos desconhecidos
 * Bloqueia payloads inválidos
 * Converte tipos automaticamente
 
----
-
-Criação de Mensagem:
+**Criação de Mensagem:**
 
 * `content`:
 
@@ -190,17 +151,15 @@ Criação de Mensagem:
   * máximo de 80 caracteres
   * não aceita string vazia
 
----
 
-Atualização de Status:
+**Atualização de Status:**
 
 * Status obrigatório
 * Apenas valores do enum permitido
 * Conversão automática (`read` → `READ`)
 
----
 
-Filtros de Query:
+**Filtros de Query:**
 
 * `sender`: máximo 80 caracteres
 * `startDate` / `endDate`:
@@ -228,26 +187,18 @@ Todas as respostas de erro seguem o mesmo formato:
 
 ---
 
-## 📊 Logs e Observabilidade
+## 🚀 Como Executar o Projeto
 
-* Cada request recebe um **requestId**
-* Logs estruturados em **JSON**
-* Pronto para integração com **CloudWatch / Datadog / ELK**
-
-Exemplo de log:
-
-```json
-{
-  "level": "info",
-  "msg": "HTTP request",
-  "method": "GET",
-  "path": "/messages",
-  "statusCode": 200,
-  "durationMs": 12,
-  "requestId": "efe2afef-b9d0-4dc0-8cd8-4420200daf71"
-}
+```bash
+npm install
+npm run start:dev
 ```
 
+API disponível em:
+
+```
+http://localhost:3000
+```
 ---
 
 ## 🧪 Testes Automatizados
@@ -273,6 +224,63 @@ npm run test:cov
 ```
 
 ---
+
+ **Testes End-to-End (E2E)**
+
+Além dos testes unitários, o projeto possui testes ***end-to-end (E2E)*** que validam o fluxo completo da API, incluindo autenticação, regras de negócio e filtros.
+
+**Os testes E2E utilizam:**
+
+* Jest
+* Supertest
+
+**Os testes E2E validam os seguintes fluxos:**
+
+✅ Autenticação via JWT (POST /auth/login)
+✅ Criação de mensagem autenticada (POST /messages)
+✅ Busca de mensagem por ID (GET /messages/:id)
+✅ Atualização de status com transições válidas:
+    * SENT → RECEIVED
+    * RECEIVED → READ
+✅ Atualização de status com input case-insensitive (received, read)
+✅ Filtro de mensagens por remetente (case-insensitive)
+✅ Filtro de mensagens por período (YYYY-MM-DD)
+✅ Garantia de que mensagens criadas aparecem nos filtros
+
+Esses testes asseguram que a API funciona corretamente do ponto de vista do consumidor final.
+
+▶️ **Como rodar os testes E2E**
+
+```
+npm run test:e2e
+```
+
+Durante os testes E2E, as credenciais de autenticação são definidas automaticamente no ambiente de teste para garantir consistência e isolamento.
+
+---
+
+## 📊 Logs e Observabilidade
+
+* Cada request recebe um **requestId**
+* Logs estruturados em **JSON**
+* Pronto para integração com **CloudWatch / Datadog / ELK**
+
+Exemplo de log:
+
+```json
+{
+  "level": "info",
+  "msg": "HTTP request",
+  "method": "GET",
+  "path": "/messages",
+  "statusCode": 200,
+  "durationMs": 12,
+  "requestId": "efe2afef-b9d0-4dc0-8cd8-4420200daf71"
+}
+```
+---
+
+
 
 
 
