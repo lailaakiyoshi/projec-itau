@@ -52,25 +52,30 @@ shared/
 
 * Alta testabilidade
 * Baixo acoplamento
-* ácil evolução para outros serviços e integrações.
+* Fácil evolução para outros serviços e integrações.
 
 ---
 
 ## 🔐 Endpoints da Api
 
-| Método | Caminho                                             | Descrição                      | Respostas                                                                                                                                        |
-| ------ | --------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| POST   | `/messages`                                         | Cria uma nova mensagem         | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
-| GET    | `/messages/:id`                                     | Busca uma mensagem por ID      | **200** – Mensagem encontrada<br>**400** – ID inválido (não UUID)<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado              |
-| GET    | `/messages?sender=...`                              | Filtra mensagens por remetente | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
-| PATCH  | `/messages/:id/status`                              | Atualiza o status da mensagem  | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
-| GET    | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período    | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
+``md
+## 🔐 Endpoints da API
+
+| Método | Caminho                                             | Descrição                          | Respostas                                                                                                                                        |
+|------|-----------------------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| POST | `/auth/login`                                       | Autenticação JWT                   | **201** – Token gerado<br>**401** – Credenciais inválidas                                                                                          |
+| GET  | `/health`                                           | Health Check da API                | **200** – API saudável                                                                                                                                 |
+| POST | `/messages`                                         | Cria uma nova mensagem             | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
+| GET  | `/messages/:id`                                     | Busca uma mensagem por ID          | **200** – Mensagem encontrada<br>**400** – ID inválido<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado                         |
+| GET  | `/messages?sender=...`                              | Filtra mensagens por remetente     | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
+| GET  | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período        | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
+| PATCH| `/messages/:id/status`                              | Atualiza o status da mensagem      | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
 
 ---
 
 ## 🔐 Autenticação
 
-TTodos os endpoints (exceto login) exigem autenticação via **JWT.**
+Todos os endpoints (exceto login) exigem autenticação via **JWT.**
 
 **1. Realizar Login**
 
