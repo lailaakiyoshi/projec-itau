@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { MESSAGE_REPOSITORY } from '../ports/message-repository.token';
 import { MessageRepository } from '../ports/message.repository';
 import { MessageStatus } from '@/domain/message/message-status.enum';
@@ -14,10 +19,18 @@ export class UpdateMessageStatusUseCase {
     const message = await this.repository.findById(id);
 
     if (!message) {
-      throw new NotFoundException('Message not found');
+      throw new NotFoundException(`Message with id "${id}" not found`);
     }
 
-    message.updateStatus(status);
+    if (message.status === status) {
+      return message;
+    }
+
+    try {
+      message.updateStatus(status);
+    } catch (err) {
+      throw new BadRequestException((err as Error).message);
+    }
 
     await this.repository.update(message);
     return message;

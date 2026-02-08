@@ -24,7 +24,19 @@ export class Message {
   }
 
    updateStatus(next: MessageStatus) {
-    if (this.status === next) return;
-    this.status = next;
+  if (this.status === next) return;
+
+  const allowed: Record<MessageStatus, MessageStatus[]> = {
+    [MessageStatus.SENT]: [MessageStatus.RECEIVED],
+    [MessageStatus.RECEIVED]: [MessageStatus.READ],
+    [MessageStatus.READ]: [],
+  };
+
+  if (!allowed[this.status].includes(next)) {
+    throw new Error(`Invalid status transition: ${this.status} -> ${next}`);
   }
+
+  this.status = next;
+}
+
 }

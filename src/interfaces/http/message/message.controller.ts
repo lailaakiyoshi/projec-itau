@@ -4,20 +4,24 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
+  UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
+import { JwtAuthGuard } from '@/infrastructure/auth/jwt-auth.guard';
+
 import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
+import { ListMessagesQueryDto } from './dto/list-messages.query.dto';
+
 import { CreateMessageUseCase } from '@/application/message/use-cases/create-message.usecase';
 import { GetMessageByIdUseCase } from '@/application/message/use-cases/get-message-by-id.usecase';
 import { GetMessagesBySenderUseCase } from '@/application/message/use-cases/get-messages-by-sender.usecase';
 import { GetMessagesByPeriodUseCase } from '@/application/message/use-cases/get-messages-by-period.usecase';
-import { Patch } from '@nestjs/common';
-import { UpdateStatusDto } from './dto/update-status.dto';
 import { UpdateMessageStatusUseCase } from '@/application/message/use-cases/update-message-status.usecase';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '@/infrastructure/auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('messages')
@@ -35,52 +39,56 @@ export class MessageController {
     return this.createUseCase.execute(dto);
   }
 
-  @Get('sender/:sender')
-  findBySender(@Param('sender') sender: string) {
-    if (!sender?.trim()) {
-      throw new BadRequestException('sender is required');
+  /**
+   * GET /messages?sender=...
+   * GET /messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+   */
+  @Get()
+  list(@Query() query: ListMessagesQueryDto) {
+    const { sender, startDate, endDate } = query;
+
+    if (sender) {
+      return this.getBySenderUseCase.execute(sender);
     }
-    return this.getBySenderUseCase.execute(sender);
+
+    if (startDate || endDate) {
+      if (!startDate || !endDate) {
+        throw new BadRequestException(
+          'Provide both startDate and endDate in format YYYY-MM-DD (e.g., 2026-02-06).',
+        );
+      }
+
+      const start = new Date(`${startDate}T00:00:00-03:00`);
+      const endInclusive = new Date(`${endDate}T23:59:59.999-03:00`);
+
+      if (Number.isNaN(start.getTime()) || Number.isNaN(endInclusive.getTime())) {
+        throw new BadRequestException(
+          'Invalid date. Use YYYY-MM-DD (e.g., 2026-02-06).',
+        );
+      }
+
+      if (start > endInclusive) {
+        throw new BadRequestException('startDate must be <= endDate.');
+      }
+
+      return this.getByPeriodUseCase.execute(start, endInclusive);
+    }
+
+    throw new BadRequestException(
+      'Provide sender OR (startDate and endDate).',
+    );
   }
 
-  @Get('period')
-  findByPeriod(
-    @Query('start') start: string,
-    @Query('end') end: string,
-  ) {
-    if (!start || !end) {
-      throw new BadRequestException(
-        'Provide both start and end (YYYY-MM-DD or ISO).',
-      );
-    }
-
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
-      throw new BadRequestException('Invalid start/end. Use YYYY-MM-DD or ISO.');
-    }
-
-    const endInclusive = new Date(endDate);
-    endInclusive.setHours(23, 59, 59, 999);
-
-    if (startDate > endInclusive) {
-      throw new BadRequestException('start must be <= end.');
-    }
-
-    return this.getByPeriodUseCase.execute(startDate, endInclusive);
+  @Get(':id')
+  findById(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.getByIdUseCase.execute(id);
   }
 
   @Patch(':id/status')
   updateStatus(
-  @Param('id') id: string,
-  @Body() dto: UpdateStatusDto,
-) {
-  return this.updateStatusUseCase.execute(id, dto.status);
-}
-
-  @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.getByIdUseCase.execute(id);
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateStatusDto,
+  ) {
+    return this.updateStatusUseCase.execute(id, dto.status);
   }
 }
