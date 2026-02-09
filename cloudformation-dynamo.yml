@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DynamoDB table for Messages API (PK id + GSIs SenderIndex and PeriodIndex) with optional TTL.
+
+Parameters:
+  TableName:
+    Type: String
+    Default: messages
+    Description: DynamoDB table name.
+
+  EnableTTL:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Enable DynamoDB TTL using attribute named "ttl".
+
+  TTLAttributeName:
+    Type: String
+    Default: ttl
+    Description: TTL attribute name (Number, epoch seconds).
+
+Conditions:
+  TTLIsEnabled: !Equals [!Ref EnableTTL, 'true']
+
+Resources:
+  MessagesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      BillingMode: PAY_PER_REQUEST
+
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: senderKey
+          AttributeType: S
+        - AttributeName: sentAt
+          AttributeType: S
+        - AttributeName: pkAll
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+      GlobalSecondaryIndexes:
+        - IndexName: SenderIndex
+          KeySchema:
+            - AttributeName: senderKey
+              KeyType: HASH
+            - AttributeName: sentAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+        - IndexName: PeriodIndex
+          KeySchema:
+            - AttributeName: pkAll
+              KeyType: HASH
+            - AttributeName: sentAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+      TimeToLiveSpecification: !If
+        - TTLIsEnabled
+        - AttributeName: !Ref TTLAttributeName
+          Enabled: true
+        - !Ref AWS::NoValue
+
+Outputs:
+  MessagesTableName:
+    Description: DynamoDB table name
+    Value: !Ref MessagesTable
+
+  MessagesTableArn:
+    Description: DynamoDB table ARN
+    Value: !GetAtt MessagesTable.Arn
+
+  SenderIndexName:
+    Description: GSI for querying by sender
+    Value: SenderIndex
+
+  PeriodIndexName:
+    Description: GSI for querying by period
+    Value: PeriodIndex
