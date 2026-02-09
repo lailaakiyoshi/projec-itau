@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1770621216159" clover="3.2.0">
-  <project timestamp="1770621216159" name="All files">
-    <metrics statements="69" coveredstatements="69" conditionals="19" coveredconditionals="19" methods="19" coveredmethods="19" elements="107" coveredelements="107" complexity="0" loc="69" ncloc="69" packages="4" files="8" classes="8"/>
+<coverage generated="1770625579235" clover="3.2.0">
+  <project timestamp="1770625579235" name="All files">
+    <metrics statements="83" coveredstatements="83" conditionals="32" coveredconditionals="32" methods="19" coveredmethods="19" elements="134" coveredelements="134" complexity="0" loc="83" ncloc="83" packages="4" files="8" classes="8"/>
     <package name="application.message.ports">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="message-repository.token.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\application\message\ports\message-repository.token.ts">
@@ -14,27 +14,41 @@
       </file>
     </package>
     <package name="application.message.use-cases">
-      <metrics statements="34" coveredstatements="34" conditionals="9" coveredconditionals="9" methods="6" coveredmethods="6"/>
+      <metrics statements="48" coveredstatements="48" conditionals="22" coveredconditionals="22" methods="6" coveredmethods="6"/>
       <file name="get-messages-by-period.usecase.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\application\message\use-cases\get-messages-by-period.usecase.ts">
-        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-      </file>
-      <file name="get-messages-by-sender.usecase.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\application\message\use-cases\get-messages-by-sender.usecase.ts">
-        <metrics statements="9" coveredstatements="9" conditionals="3" coveredconditionals="3" methods="2" coveredmethods="2"/>
+        <metrics statements="17" coveredstatements="17" conditionals="10" coveredconditionals="10" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
-        <line num="9" count="2" type="stmt"/>
-        <line num="13" count="2" type="stmt"/>
-        <line num="15" count="2" type="cond" truecount="3" falsecount="0"/>
-        <line num="16" count="1" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="13" count="6" type="cond" truecount="3" falsecount="0"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="20" count="4" type="cond" truecount="3" falsecount="0"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="30" count="2" type="cond" truecount="3" falsecount="0"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+      </file>
+      <file name="get-messages-by-sender.usecase.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\application\message\use-cases\get-messages-by-sender.usecase.ts">
+        <metrics statements="12" coveredstatements="12" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="3" falsecount="0"/>
         <line num="19" count="1" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="26" count="2" type="cond" truecount="3" falsecount="0"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
       </file>
       <file name="update-message-status.usecase.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\application\message\use-cases\update-message-status.usecase.ts">
         <metrics statements="19" coveredstatements="19" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
@@ -63,20 +77,20 @@
       <metrics statements="22" coveredstatements="22" conditionals="6" coveredconditionals="6" methods="5" coveredmethods="5"/>
       <file name="message-status.enum.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\domain\message\message-status.enum.ts">
         <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="1" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="2" count="4" type="stmt"/>
-        <line num="3" count="4" type="stmt"/>
-        <line num="4" count="4" type="stmt"/>
+        <line num="1" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="2" count="5" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="4" count="5" type="stmt"/>
       </file>
       <file name="message.entity.ts" path="C:\Users\Laila\Desktop\desafio-itau\src\domain\message\message.entity.ts">
         <metrics statements="18" coveredstatements="18" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
-        <line num="1" count="4" type="stmt"/>
-        <line num="3" count="4" type="stmt"/>
-        <line num="5" count="23" type="stmt"/>
-        <line num="6" count="23" type="stmt"/>
-        <line num="7" count="23" type="stmt"/>
-        <line num="8" count="23" type="stmt"/>
-        <line num="9" count="23" type="stmt"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="5" count="24" type="stmt"/>
+        <line num="6" count="24" type="stmt"/>
+        <line num="7" count="24" type="stmt"/>
+        <line num="8" count="24" type="stmt"/>
+        <line num="9" count="24" type="stmt"/>
         <line num="13" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="14" count="1" type="stmt"/>
         <line num="16" count="1" type="stmt"/>

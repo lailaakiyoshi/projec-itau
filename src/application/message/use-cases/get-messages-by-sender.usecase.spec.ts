@@ -34,9 +34,7 @@ describe('GetMessagesBySenderUseCase', () => {
 
     const useCase = new (GetMessagesBySenderUseCase as any)(repo);
 
-    await expect(useCase.execute('sender')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(useCase.execute('sender')).rejects.toBeInstanceOf(NotFoundException);
 
     expect(repo.findBySender).toHaveBeenCalledTimes(1);
     expect(repo.findBySender).toHaveBeenCalledWith('sender');
@@ -49,9 +47,7 @@ describe('GetMessagesBySenderUseCase', () => {
 
     const useCase = new (GetMessagesBySenderUseCase as any)(repo);
 
-    await expect(useCase.execute('')).rejects.toBeInstanceOf(
-      BadRequestException,
-    );
+    await expect(useCase.execute('')).rejects.toBeInstanceOf(BadRequestException);
 
     expect(repo.findBySender).not.toHaveBeenCalled();
   });
