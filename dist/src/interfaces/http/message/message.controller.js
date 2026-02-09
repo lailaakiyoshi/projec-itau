@@ -51,7 +51,7 @@ let MessageController = class MessageController {
             if (start > endInclusive) {
                 throw new common_1.BadRequestException('startDate must be <= endDate.');
             }
-            return this.getByPeriodUseCase.execute(start, endInclusive);
+            return this.getByPeriodUseCase.execute(startDate, endDate);
         }
         throw new common_1.BadRequestException('Provide sender OR (startDate and endDate).');
     }

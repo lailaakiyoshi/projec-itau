@@ -67,7 +67,7 @@ export class MessageController {
         throw new BadRequestException('startDate must be <= endDate.');
       }
 
-      return this.getByPeriodUseCase.execute(start, endInclusive);
+      return this.getByPeriodUseCase.execute(startDate, endDate);
     }
 
     throw new BadRequestException(

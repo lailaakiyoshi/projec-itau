@@ -13,9 +13,9 @@ const create_message_usecase_1 = require("../../../application/message/use-cases
 const get_message_by_id_usecase_1 = require("../../../application/message/use-cases/get-message-by-id.usecase");
 const get_messages_by_sender_usecase_1 = require("../../../application/message/use-cases/get-messages-by-sender.usecase");
 const get_messages_by_period_usecase_1 = require("../../../application/message/use-cases/get-messages-by-period.usecase");
+const update_message_status_usecase_1 = require("../../../application/message/use-cases/update-message-status.usecase");
 const message_repository_token_1 = require("../../../application/message/ports/message-repository.token");
 const in_memory_message_repository_1 = require("../../../infrastructure/message/in-memory-message.repository");
-const update_message_status_usecase_1 = require("../../../application/message/use-cases/update-message-status.usecase");
 let MessageModule = class MessageModule {
 };
 exports.MessageModule = MessageModule;
@@ -34,6 +34,7 @@ exports.MessageModule = MessageModule = __decorate([
             get_messages_by_period_usecase_1.GetMessagesByPeriodUseCase,
             update_message_status_usecase_1.UpdateMessageStatusUseCase,
         ],
+        exports: [message_repository_token_1.MESSAGE_REPOSITORY],
     })
 ], MessageModule);
 //# sourceMappingURL=message.module.js.map

@@ -21,6 +21,12 @@ let UpdateMessageStatusUseCase = class UpdateMessageStatusUseCase {
         this.repository = repository;
     }
     async execute(id, status) {
+        if (!id || id.trim().length === 0) {
+            throw new common_1.BadRequestException('id is required');
+        }
+        if (!status) {
+            throw new common_1.BadRequestException('status is required');
+        }
         const message = await this.repository.findById(id);
         if (!message) {
             throw new common_1.NotFoundException(`Message with id "${id}" not found`);

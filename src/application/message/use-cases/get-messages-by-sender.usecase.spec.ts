@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { GetMessagesBySenderUseCase } from './get-messages-by-sender.usecase';
 import { MessageRepository } from '../ports/message.repository';
 import { Message } from '@/domain/message/message.entity';
@@ -15,7 +15,7 @@ describe('GetMessagesBySenderUseCase', () => {
     );
 
     const repo: Partial<MessageRepository> = {
-      findBySender: jest.fn().mockResolvedValue([msg]), // ✅ precisa ter item
+      findBySender: jest.fn().mockResolvedValue([msg]),
     };
 
     const useCase = new (GetMessagesBySenderUseCase as any)(repo);
@@ -34,9 +34,25 @@ describe('GetMessagesBySenderUseCase', () => {
 
     const useCase = new (GetMessagesBySenderUseCase as any)(repo);
 
-    await expect(useCase.execute('sender')).rejects.toBeInstanceOf(NotFoundException);
+    await expect(useCase.execute('sender')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
 
     expect(repo.findBySender).toHaveBeenCalledTimes(1);
     expect(repo.findBySender).toHaveBeenCalledWith('sender');
+  });
+
+  it('should throw BadRequestException when sender is empty', async () => {
+    const repo: Partial<MessageRepository> = {
+      findBySender: jest.fn(),
+    };
+
+    const useCase = new (GetMessagesBySenderUseCase as any)(repo);
+
+    await expect(useCase.execute('')).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+
+    expect(repo.findBySender).not.toHaveBeenCalled();
   });
 });

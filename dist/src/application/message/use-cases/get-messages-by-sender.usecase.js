@@ -8,17 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetMessagesBySenderUseCase = void 0;
 const common_1 = require("@nestjs/common");
+const message_repository_token_1 = require("../ports/message-repository.token");
 const message_repository_1 = require("../ports/message.repository");
 let GetMessagesBySenderUseCase = class GetMessagesBySenderUseCase {
     constructor(repository) {
         this.repository = repository;
     }
     async execute(sender) {
-        const normalizedSender = sender.trim();
-        const messages = await this.repository.findBySender(normalizedSender);
+        const messages = await this.repository.findBySender(sender);
         if (!messages || messages.length === 0) {
             throw new common_1.NotFoundException('Sender not found');
         }
@@ -28,6 +31,7 @@ let GetMessagesBySenderUseCase = class GetMessagesBySenderUseCase {
 exports.GetMessagesBySenderUseCase = GetMessagesBySenderUseCase;
 exports.GetMessagesBySenderUseCase = GetMessagesBySenderUseCase = __decorate([
     (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)(message_repository_token_1.MESSAGE_REPOSITORY)),
     __metadata("design:paramtypes", [message_repository_1.MessageRepository])
 ], GetMessagesBySenderUseCase);
 //# sourceMappingURL=get-messages-by-sender.usecase.js.map
