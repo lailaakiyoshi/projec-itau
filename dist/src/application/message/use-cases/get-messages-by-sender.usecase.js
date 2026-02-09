@@ -21,7 +21,11 @@ let GetMessagesBySenderUseCase = class GetMessagesBySenderUseCase {
         this.repository = repository;
     }
     async execute(sender) {
-        const messages = await this.repository.findBySender(sender);
+        if (!sender || sender.trim().length === 0) {
+            throw new common_1.BadRequestException('sender is required');
+        }
+        const normalizedSender = sender.trim();
+        const messages = await this.repository.findBySender(normalizedSender);
         if (!messages || messages.length === 0) {
             throw new common_1.NotFoundException('Sender not found');
         }

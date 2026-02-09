@@ -1,4 +1,4 @@
-import { MessageRepository } from '@/application/message/ports/message.repository';
+import { MessageRepository } from '../ports/message.repository';
 export declare class GetMessagesBySenderUseCase {
     private readonly repository;
     constructor(repository: MessageRepository);
