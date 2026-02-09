@@ -44,5 +44,16 @@ describe('UpdateMessageStatusUseCase', () => {
         const useCase = new update_message_status_usecase_1.UpdateMessageStatusUseCase(repo);
         await expect(useCase.execute('x', message_status_enum_1.MessageStatus.READ)).rejects.toBeInstanceOf(common_1.NotFoundException);
     });
+    it('should not persist when status is already the same', async () => {
+        const msg = new message_entity_1.Message('id', 'c', 's', new Date(), message_status_enum_1.MessageStatus.SENT);
+        const repo = {
+            findById: jest.fn().mockResolvedValue(msg),
+            update: jest.fn(),
+        };
+        const useCase = new update_message_status_usecase_1.UpdateMessageStatusUseCase(repo);
+        const result = await useCase.execute('id', message_status_enum_1.MessageStatus.SENT);
+        expect(result.status).toBe(message_status_enum_1.MessageStatus.SENT);
+        expect(repo.update).not.toHaveBeenCalled();
+    });
 });
 //# sourceMappingURL=update-message-status.usecase.spec.js.map

@@ -98,7 +98,7 @@ Authorization: Bearer <token>
 # Helth Check
 
 | Método | Caminho | Descrição | Autenticação | Retorno |
-| GET | /health | Health Check da API | Não | |
+| GET | /health | Health Check da API | Não | | {"status":"ok","timestamp":"2026-02-09T01:07:54.694Z"} |
 
 # Endpoint
 
