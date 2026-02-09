@@ -14,10 +14,6 @@ export declare class MessageController {
     private readonly updateStatusUseCase;
     constructor(createUseCase: CreateMessageUseCase, getByIdUseCase: GetMessageByIdUseCase, getBySenderUseCase: GetMessagesBySenderUseCase, getByPeriodUseCase: GetMessagesByPeriodUseCase, updateStatusUseCase: UpdateMessageStatusUseCase);
     create(dto: CreateMessageDto): Promise<import("../../../domain/message/message.entity").Message>;
-    /**
-     * GET /messages?sender=...
-     * GET /messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
-     */
     list(query: ListMessagesQueryDto): Promise<import("../../../domain/message/message.entity").Message[]>;
     findById(id: string): Promise<import("../../../domain/message/message.entity").Message>;
     updateStatus(id: string, dto: UpdateStatusDto): Promise<import("../../../domain/message/message.entity").Message>;

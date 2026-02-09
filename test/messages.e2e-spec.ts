@@ -329,4 +329,15 @@ describe('Messages API (e2e)', () => {
   });
 });
 
+it('should return 404 when sender does not exist', async () => {
+  const res = await request(app.getHttpServer())
+    .get('/messages')
+    .query({ sender: 'SENDER_INEXISTENTE_123' })
+    .set('Authorization', `Bearer ${token}`)
+    .expect(404);
+
+  expect(res.body.message).toBeDefined();
+  expect(String(res.body.message)).toContain('Sender not found');
+});
+
 });

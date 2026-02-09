@@ -16,6 +16,14 @@ export class UpdateMessageStatusUseCase {
   ) {}
 
   async execute(id: string, status: MessageStatus) {
+    if (!id || id.trim().length === 0) {
+      throw new BadRequestException('id is required');
+    }
+
+    if (!status) {
+      throw new BadRequestException('status is required');
+    }
+
     const message = await this.repository.findById(id);
 
     if (!message) {

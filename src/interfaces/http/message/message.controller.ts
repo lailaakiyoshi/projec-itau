@@ -39,15 +39,11 @@ export class MessageController {
     return this.createUseCase.execute(dto);
   }
 
-  /**
-   * GET /messages?sender=...
-   * GET /messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
-   */
   @Get()
   list(@Query() query: ListMessagesQueryDto) {
     const { sender, startDate, endDate } = query;
 
-    if (sender) {
+    if (sender && sender.trim().length > 0) {
       return this.getBySenderUseCase.execute(sender);
     }
 
