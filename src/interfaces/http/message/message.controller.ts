@@ -58,8 +58,8 @@ export class MessageController {
         );
       }
 
-      const start = new Date(`${startDate}T00:00:00-03:00`);
-      const endInclusive = new Date(`${endDate}T23:59:59.999-03:00`);
+      const start = new Date(`${startDate}T00:00:00.000Z`);
+      const endInclusive = new Date(`${endDate}T23:59:59.999Z`);
 
       if (Number.isNaN(start.getTime()) || Number.isNaN(endInclusive.getTime())) {
         throw new BadRequestException(
