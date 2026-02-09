@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1770537504690" clover="3.2.0">
-  <project timestamp="1770537504690" name="All files">
+<coverage generated="1770609195103" clover="3.2.0">
+  <project timestamp="1770609195103" name="All files">
     <metrics statements="62" coveredstatements="62" conditionals="12" coveredconditionals="12" methods="19" coveredmethods="19" elements="93" coveredelements="93" complexity="0" loc="62" ncloc="62" packages="4" files="8" classes="8"/>
     <package name="application.message.ports">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>

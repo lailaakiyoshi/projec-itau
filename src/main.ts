@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -9,11 +9,24 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, 
-      forbidNonWhitelisted: true, 
-      transform: true, 
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
       transformOptions: {
-        enableImplicitConversion: true, 
+        enableImplicitConversion: true,
+      },
+
+      exceptionFactory: (errors) => {
+        const details = errors.flatMap((e) => {
+          const constraints = e.constraints ? Object.values(e.constraints) : [];
+          return constraints.map((msg) => `${e.property}: ${msg}`);
+        });
+
+        return new BadRequestException({
+          error: 'Bad Request',
+          message: 'Validation failed',
+          details,
+        });
       },
     }),
   );

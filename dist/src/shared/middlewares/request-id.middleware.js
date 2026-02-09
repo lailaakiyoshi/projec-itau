@@ -12,9 +12,9 @@ const crypto_1 = require("crypto");
 let RequestIdMiddleware = class RequestIdMiddleware {
     use(req, res, next) {
         const incoming = req.header('x-request-id');
-        const requestId = incoming && incoming.trim() ? incoming : (0, crypto_1.randomUUID)();
-        req.requestId = requestId;
-        res.setHeader('x-request-id', requestId);
+        const id = incoming && incoming.trim().length > 0 ? incoming : (0, crypto_1.randomUUID)();
+        req.requestId = id;
+        res.setHeader('x-request-id', id);
         next();
     }
 };

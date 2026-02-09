@@ -57,7 +57,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         else {
             console.warn(JSON.stringify(log));
         }
-        res.status(status).json(payload);
+        return res.status(status).json(payload);
     }
 };
 exports.HttpExceptionFilter = HttpExceptionFilter;

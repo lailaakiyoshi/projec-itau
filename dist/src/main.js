@@ -14,6 +14,17 @@ async function bootstrap() {
         transformOptions: {
             enableImplicitConversion: true,
         },
+        exceptionFactory: (errors) => {
+            const details = errors.flatMap((e) => {
+                const constraints = e.constraints ? Object.values(e.constraints) : [];
+                return constraints.map((msg) => `${e.property}: ${msg}`);
+            });
+            return new common_1.BadRequestException({
+                error: 'Bad Request',
+                message: 'Validation failed',
+                details,
+            });
+        },
     }));
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new http_logging_interceptor_1.HttpLoggingInterceptor());

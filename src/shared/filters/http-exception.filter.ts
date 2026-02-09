@@ -37,6 +37,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
 
       const responseBody = exception.getResponse();
+
       if (typeof responseBody === 'string') {
         message = responseBody;
         error = exception.name;
@@ -73,6 +74,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       console.warn(JSON.stringify(log));
     }
 
-    res.status(status).json(payload);
+    return res.status(status).json(payload);
   }
 }

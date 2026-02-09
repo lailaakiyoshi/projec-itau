@@ -15,22 +15,65 @@ let HttpLoggingInterceptor = class HttpLoggingInterceptor {
         const req = http.getRequest();
         const res = http.getResponse();
         const start = Date.now();
-        return next.handle().pipe((0, operators_1.tap)({
-            next: () => {
-                const durationMs = Date.now() - start;
-                const log = {
-                    level: 'info',
-                    msg: 'HTTP request',
-                    requestId: req.requestId,
-                    method: req.method,
-                    path: req.originalUrl || req.url,
-                    statusCode: res.statusCode,
-                    durationMs,
-                    user: req.user?.sub ?? req.user?.id ?? undefined,
-                };
-                console.log(JSON.stringify(log));
-            },
+        const method = req.method;
+        const path = req.originalUrl || req.url;
+        const requestId = req.requestId ||
+            req.headers['x-request-id'] ||
+            res.getHeader('x-request-id');
+        const user = this.safeUser(req.user);
+        console.log(JSON.stringify({
+            level: 'info',
+            event: 'http_request_start',
+            requestId,
+            method,
+            path,
+            user,
+            timestamp: new Date().toISOString(),
         }));
+        return next.handle().pipe((0, operators_1.tap)(() => {
+            const durationMs = Date.now() - start;
+            const statusCode = res.statusCode;
+            console.log(JSON.stringify({
+                level: 'info',
+                event: 'http_request_end',
+                requestId,
+                method,
+                path,
+                statusCode,
+                durationMs,
+                user,
+                timestamp: new Date().toISOString(),
+            }));
+        }), (0, operators_1.catchError)((err) => {
+            const durationMs = Date.now() - start;
+            const statusCode = res.statusCode || 500;
+            const payload = {
+                level: statusCode >= 500 ? 'error' : 'warn',
+                event: 'http_request_error',
+                requestId,
+                method,
+                path,
+                statusCode,
+                durationMs,
+                user,
+                errorName: err?.name,
+                errorMessage: err?.message,
+                timestamp: new Date().toISOString(),
+            };
+            if (statusCode >= 500 && err?.stack) {
+                payload.stack = err.stack;
+            }
+            console.log(JSON.stringify(payload));
+            throw err;
+        }));
+    }
+    safeUser(user) {
+        if (!user)
+            return undefined;
+        return {
+            sub: user.sub ?? user.id ?? undefined,
+            username: user.username ?? user.email ?? undefined,
+        };
     }
 };
 exports.HttpLoggingInterceptor = HttpLoggingInterceptor;
