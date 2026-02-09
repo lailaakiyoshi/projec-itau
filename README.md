@@ -1,16 +1,10 @@
 
 # 📬 Desafio Técnico – API de Mensagens 
 
-## 📌 Visão Geral
-
-Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagens. Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
-
-O projeto foi desenhado para ser **escalável** e **testável**, alcançando **100% de cobertura em testes unitários** e contemplando testes **End-to-End (E2E)** para fluxos críticos.
-
----
 
 ## 📑 Índice
 
+* [Visão Geral](#-visão-geral)
 * [Tecnologias Utilizadas](#-tecnologias-utilizadas)
 * [Arquitetura](#-arquitetura)
 * [Endpoints da API](#-endpoints-da-api)
@@ -23,14 +17,22 @@ O projeto foi desenhado para ser **escalável** e **testável**, alcançando **1
 
 ---
 
+## 📌 Visão Geral
+
+Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagens. Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
+
+O projeto foi desenhado para ser **escalável** e **testável**, alcançando **100% de cobertura em testes unitários** e contemplando testes **End-to-End (E2E)** para fluxos críticos.
+
+---
+
 ## 🛠️ Tecnologias Utilizadas
 
-* **Core:** Node.js, NestJS, TypeScript
-* **Segurança:** JWT (Autenticação)
-* **Validação:** class-validator / class-transformer
-* **Testes:** Jest, Supertest
-* **Arquitetura:** Clean Architecture (Domain / Application / Infrastructure / Interfaces)
-* **Persistência:** DynamoDB (NoSQL) com implementação via Repositories (Pattern).
+### Backend
+
+- **Node.js:** versão 18 ou superior - Runtime JavaScript
+- **NestJS:** Framework para construção de aplicações escaláveis
+- **TypeScript:** Linguagem base para garantir tipagem estática e segurança no código.
+- **JWT :** Autenticação baseada em tokens
 
 ---
 
@@ -53,23 +55,6 @@ shared/
 * Alta testabilidade
 * Baixo acoplamento
 * Fácil evolução para outros serviços e integrações.
-
----
-
-## 🔐 Endpoints da Api
-
-``md
-## 🔐 Endpoints da API
-
-| Método | Caminho                                             | Descrição                          | Respostas                                                                                                                                        |
-|------|-----------------------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| POST | `/auth/login`                                       | Autenticação JWT                   | **201** – Token gerado<br>**401** – Credenciais inválidas                                                                                          |
-| GET  | `/health`                                           | Health Check da API                | **200** – API saudável                                                                                                                                 |
-| POST | `/messages`                                         | Cria uma nova mensagem             | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
-| GET  | `/messages/:id`                                     | Busca uma mensagem por ID          | **200** – Mensagem encontrada<br>**400** – ID inválido<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado                         |
-| GET  | `/messages?sender=...`                              | Filtra mensagens por remetente     | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
-| GET  | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período        | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
-| PATCH| `/messages/:id/status`                              | Atualiza o status da mensagem      | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
 
 ---
 
@@ -100,6 +85,33 @@ Use o token no header para chamar os endpoints protegidos: Authorization: Bearer
 ```http
 Authorization: Bearer <token>
 ```
+
+---
+
+## 🔐 Endpoints da Api
+
+# Autenticação
+
+| Método | Caminho | Descrição | Autenticação |
+| POST | /auth/login | Autenticação JWT | Não |
+
+# Helth Check
+
+| Método | Caminho | Descrição | Autenticação | Retorno |
+| GET | /health | Health Check da API | Não | |
+
+# Endpoint
+
+``md
+| Método | Caminho                                             | Descrição                          | Respostas                                                                                                                                        |
+|------|-----------------------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| POST | `/auth/login`                                       | Autenticação JWT                   | **201** – Token gerado<br>**401** – Credenciais inválidas                                                                                          |
+| GET  | `/health`                                           | Health Check da API                | **200** – API saudável                                                                                                                                 |
+| POST | `/messages`                                         | Cria uma nova mensagem             | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
+| GET  | `/messages/:id`                                     | Busca uma mensagem por ID          | **200** – Mensagem encontrada<br>**400** – ID inválido<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado                         |
+| GET  | `/messages?sender=...`                              | Filtra mensagens por remetente     | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
+| GET  | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período        | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
+| PATCH| `/messages/:id/status`                              | Atualiza o status da mensagem      | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
 
 ---
 
