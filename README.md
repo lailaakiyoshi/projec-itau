@@ -88,19 +88,25 @@ Authorization: Bearer <token>
 
 ---
 
-## 🔐 Endpoints da Api
+## 🔑 Autenticação
 
-# Autenticação
+Endpoint responsável pela autenticação do usuário e geração do token JWT.
 
-| Método | Caminho | Descrição | Autenticação |
-| POST | /auth/login | Autenticação JWT | Não |
+| Método | Caminho       | Descrição            | Autenticação |
+|--------|---------------|----------------------|--------------|
+| POST   | `/auth/login` | Autenticação via JWT | Não          |
 
-# Helth Check
+---
 
-| Método | Caminho | Descrição | Autenticação | Retorno |
-| GET | /health | Health Check da API | Não | | {"status":"ok","timestamp":"2026-02-09T01:07:54.694Z"} |
+## ❤️ Health Check
 
-# Endpoint
+Endpoint utilizado para verificar se a API está ativa e respondendo corretamente.
+
+| Método | Caminho   | Descrição           | Autenticação | Retorno |
+|--------|-----------|---------------------|--------------|---------|
+| GET    | `/health` | Health check da API | Não          | `{"status":"ok","timestamp":"2026-02-09T01:07:54.694Z"}` |
+
+## Endpoints
 
 ``md
 | Método | Caminho                                             | Descrição                          | Respostas                                                                                                                                        |
@@ -180,7 +186,6 @@ Exemplo de log:
   "requestId": "efe2afef-b9d0-4dc0-8cd8-4420200daf71"
 }
 ```
-
 ---
 
 ## 🚀 Como Executar o Projeto
