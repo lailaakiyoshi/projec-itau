@@ -1,53 +1,68 @@
-
-# 📬 Desafio Técnico – API de Mensagens 
-
+# 📬 Desafio Técnico – API de Mensagens
 
 ## 📑 Índice
 
-* [Visão Geral](#-visão-geral)
-* [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-* [Arquitetura](#-arquitetura)
-* [Endpoints da API](#-endpoints-da-api)
-* [Autenticação](#-autenticação)
-* [Regras de Negócio e Validações](#-regras-de-negócio-e-validações)
-* [Padronização de Erros](#-padronização-de-erros)
-* [Logs e Observabilidade](#-logs-e-observabilidade)
-* [Como Executar o Projeto](#-como-executar-o-projeto)
-* [Testes Automatizados](#-testes-automatizados)
+- [Visão Geral](#-visão-geral)
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Arquitetura](#-arquitetura)
+- [Autenticação](#-autenticação)
+- [Health Check](#-health-check)
+- [Endpoints da API](#-endpoints-da-api)
+- [Regras de Negócio e Validações](#-regras-de-negócio-e-validações)
+- [Padronização de Erros](#-padronização-de-erros)
+- [Logs e Observabilidade](#-logs-e-observabilidade)
+- [Como Executar o Projeto](#-como-executar-o-projeto)
+- [Testes Automatizados](#-testes-automatizados)
 
 ---
 
 ## 📌 Visão Geral
 
-Esta aplicação é uma **API RESTful de mensagens**, que visa enviar, consultar e alterar mensagens. Desenvolvida em **Node.js com NestJS**, seguindo princípios de **Clean Architecture**, **boas práticas**, **validações robustas**, **logs estruturados** e **autenticação JWT**.
+Esta aplicação é uma **API RESTful de mensagens**, responsável por:
 
-O projeto foi desenhado para ser **escalável** e **testável**, alcançando **100% de cobertura em testes unitários** e contemplando testes **End-to-End (E2E)** para fluxos críticos.
+- Criar mensagens
+- Consultar mensagens por **ID**
+- Consultar mensagens por **remetente**
+- Consultar mensagens por **período**
+- Atualizar o **status** da mensagem
+
+Desenvolvida com **Node.js + NestJS**, seguindo princípios de:
+
+- **Clean Architecture**
+- **Arquitetura Hexagonal (Ports & Adapters)**
+- **Validações explícitas**
+- **Autenticação JWT**
+- **Logs estruturados**
+- **Testes unitários e E2E**
+
+A API foi desenhada para ser **escalável, previsível e testável**, com **100% de cobertura em testes unitários**.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
+- **Node.js** (>= 18)
+- **NestJS**
+- **TypeScript**
+- **JWT (JSON Web Token)**
 
-- **Node.js:** versão 18 ou superior - Runtime JavaScript
-- **NestJS:** Framework para construção de aplicações escaláveis
-- **TypeScript:** Linguagem base para garantir tipagem estática e segurança no código.
-- **JWT :** Autenticação baseada em tokens
+### Testes
+- **Jest**
+- **Supertest**
 
 ---
 
 ## 🧱 Arquitetura
 
-O projeto segue os princípios da Clean Architecture e Arquitetura Hexagonal (Ports & Adapters), estabelecendo uma fundação onde a lógica de negócio é agnóstica em relação a frameworks, bancos de dados e ferramentas externas.
-
-**Organização em camadas:**
+O projeto segue **Clean Architecture + Hexagonal**, separando claramente responsabilidades.
 
 ```
-domain/
-application/
-infrastructure/
-interfaces/
-shared/
+domain/ → Entidades e regras puras
+application/ → Casos de uso (regras de negócio)
+infrastructure/ → Repositórios e implementações técnicas
+interfaces/ → Controllers HTTP
+shared/ → Filtros, interceptors e utilitários
 ```
 
 **Benefícios:**
@@ -65,14 +80,16 @@ Todos os endpoints (exceto login) exigem autenticação via **JWT.**
 **1. Realizar Login**
 
 ```POST /auth/login
-Content-Type: application/json
+Content-Type: application/json```
 
-{
+**Body**
+
+```{
   "username": "laila",
   "password": "123"
 }```
 
-**Exemplo de resposta:**
+**Response:**
 
 ```json
 {
@@ -80,7 +97,7 @@ Content-Type: application/json
 }
 ```
 
-Use o token no header para chamar os endpoints protegidos: Authorization: Bearer <token>
+**Use o token** no header para chamar os endpoints protegidos: **Authorization: Bearer <token>**
 
 ```http
 Authorization: Bearer <token>
@@ -88,15 +105,12 @@ Authorization: Bearer <token>
 
 ---
 
-## 🔑 Autenticação
+## Regras de Token
 
-Endpoint responsável pela autenticação do usuário e geração do token JWT.
+* Token inválido → 401 Unauthorized
+* Token expirado → 401 Unauthorized
+* Token ausente → 401 Unauthorized
 
-| Método | Caminho       | Descrição            | Autenticação |
-|--------|---------------|----------------------|--------------|
-| POST   | `/auth/login` | Autenticação via JWT | Não          |
-
----
 
 ## ❤️ Health Check
 
@@ -106,62 +120,77 @@ Endpoint utilizado para verificar se a API está ativa e respondendo corretament
 |--------|-----------|---------------------|--------------|---------|
 | GET    | `/health` | Health check da API | Não          | `{"status":"ok","timestamp":"2026-02-09T01:07:54.694Z"}` |
 
-## Endpoints
+## Endpoints da API
 
-``md
-| Método | Caminho                                             | Descrição                          | Respostas                                                                                                                                        |
-|------|-----------------------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| POST | `/auth/login`                                       | Autenticação JWT                   | **201** – Token gerado<br>**401** – Credenciais inválidas                                                                                          |
-| GET  | `/health`                                           | Health Check da API                | **200** – API saudável                                                                                                                                 |
-| POST | `/messages`                                         | Cria uma nova mensagem             | **201** – Mensagem criada<br>**400** – Payload inválido<br>**401** – Não autenticado                                                             |
-| GET  | `/messages/:id`                                     | Busca uma mensagem por ID          | **200** – Mensagem encontrada<br>**400** – ID inválido<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado                         |
-| GET  | `/messages?sender=...`                              | Filtra mensagens por remetente     | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Query inválida<br>**401** – Não autenticado                                           |
-| GET  | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca mensagens por período        | **200** – Lista de mensagens (pode ser vazia)<br>**400** – Datas inválidas ou incompletas<br>**401** – Não autenticado                           |
-| PATCH| `/messages/:id/status`                              | Atualiza o status da mensagem      | **200** – Status atualizado<br>**400** – Status inválido ou transição inválida<br>**404** – Mensagem não encontrada<br>**401** – Não autenticado |
+| Método | Caminho                                             | Descrição           | Respostas                          |
+| ------ | --------------------------------------------------- | ------------------- | ---------------------------------- |
+| POST   | `/auth/login`                                       | Autenticação JWT    | **201**, **401**                   |
+| GET    | `/health`                                           | Health Check        | **200**                            |
+| POST   | `/messages`                                         | Cria mensagem       | **201**, **400**, **401**          |
+| GET    | `/messages/:id`                                     | Busca por ID        | **200**, **400**, **404**, **401** |
+| GET    | `/messages?sender=...`                              | Busca por remetente | **200**, **400**, **404**, **401** |
+| GET    | `/messages?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD` | Busca por período   | **200**, **400**, **404**, **401** |
+| PATCH  | `/messages/:id/status`                              | Atualiza status     | **200**, **400**, **404**, **401** |
 
 ---
 
 ## ✅ Regra de Negócio e Validações
 
-1. **Máquina de Estados (Status)**
+1. **Status da Mensagem (Máquina de Estados)**
 O status de uma mensagem segue obrigatoriamente este fluxo:
 
 * ✅ `SENT → RECEIVED`
 * ✅ `RECEIVED → READ`
 * ❌ `SENT → READ` (inválido)
 
-2. **Filtros de Busca**
+2. **Criação de Mensagem**
 
-* **Exclusividade:** Apenas um tipo de filtro por vez (sender OU startDate + endDate). Se nenhum for informado, retorna 400.
+* content: obrigatório (máx. 1000 caracteres)
+* sender: obrigatório (máx. 80 caracteres)
+* Payload inválido → 400
 
-* **Remetente:** Case-insensitive (Laila == lAiLa) e ignora espaços nas pontas.
+3. **Busca por ID**
 
-* **Datas:** Formato **YYYY-MM-DD.** Intervalo inclusivo. Ambos os campos são obrigatórios.
+* ID inválido → 400
+* ID inexistente → 404
 
-3. **Validações de Entrada (DTOs)**
-* **Global:** Remove campos desconhecidos e bloqueia payloads vazios.
+4. **Busca por Remetente**
 
-* **Criação:**
+* sender obrigatório
+* Case-insensitive (Laila = lAiLa)
+* Espaços nas extremidades são ignorados
+* sender vazio → **400 Bad Request**
+* Nenhuma mensagem encontrada → **404 Not Found**
 
-- content: Obrigatório, máx 1000 chars.
+5. **Busca por Periodo**
 
-- sender: Obrigatório, máx 80 chars.
+* startDate e endDate obrigatórios
+* Formato: YYYY-MM-DD
+* Intervalo inclusivo
+* startDate > endDate → **400**
+* Datas inválidas → **400**
+* Nenhuma mensagem no período → **404 Not Found**
 
-* **Atualização:** Conversão automática de status (read → READ).
+6.  **Exclusividade de Filtros**
+
+* Apenas um tipo de filtro por vez
+   - sender **OU**
+   - startDate + endDate
+* Nenhum filtro informado → **400 Bad Reques**
 
 ---
 
 ## ❌ Padronização de Erros
 
-Todas as respostas de erro seguem o padrão RFC adaptado:
+Todas as respostas de erro seguem um padrão consistente:
 
 ```json
 {
   "statusCode": 400,
   "error": "Bad Request",
-  "message": "Invalid status transition: SENT -> READ",
-  "path": "/messages/123/status",
-  "method": "PATCH",
+  "message": "sender is required",
+  "path": "/messages",
+  "method": "GET",
   "timestamp": "2026-02-08T10:30:00.000Z",
   "requestId": "c9878ee4-e54b-41ac-9a89-4a5dc627bb3b"
 }
@@ -210,7 +239,7 @@ http://localhost:3000
 1. **Testes Unitários**
 Focam na lógica de domínio e regras de negócio.
 
-* **Quantidade:** 21 testes.
+* **Quantidade:** 30 testes.
 * **Cobertura:** 100% (Statements, Branches, Functions, Lines).
 
 ```bash
