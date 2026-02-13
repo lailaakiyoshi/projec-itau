@@ -8,16 +8,16 @@ import { GetMessagesByPeriodUseCase } from '@/application/message/use-cases/get-
 import { UpdateMessageStatusUseCase } from '@/application/message/use-cases/update-message-status.usecase';
 
 import { MESSAGE_REPOSITORY } from '@/application/message/ports/message-repository.token';
-import { InMemoryMessageRepository } from '@/infrastructure/message/in-memory-message.repository';
+import { MessageDynamoRepository } from '../../../infrastructure/repositories/message-dynamo.repository';
 
 @Module({
   controllers: [MessageController],
   providers: [
-    InMemoryMessageRepository,
+    MessageDynamoRepository,
 
     {
       provide: MESSAGE_REPOSITORY,
-      useExisting: InMemoryMessageRepository,
+      useExisting: MessageDynamoRepository,
     },
 
     CreateMessageUseCase,

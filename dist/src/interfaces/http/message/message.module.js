@@ -15,7 +15,7 @@ const get_messages_by_sender_usecase_1 = require("../../../application/message/u
 const get_messages_by_period_usecase_1 = require("../../../application/message/use-cases/get-messages-by-period.usecase");
 const update_message_status_usecase_1 = require("../../../application/message/use-cases/update-message-status.usecase");
 const message_repository_token_1 = require("../../../application/message/ports/message-repository.token");
-const in_memory_message_repository_1 = require("../../../infrastructure/message/in-memory-message.repository");
+const message_dynamo_repository_1 = require("../../../infrastructure/repositories/message-dynamo.repository");
 let MessageModule = class MessageModule {
 };
 exports.MessageModule = MessageModule;
@@ -23,10 +23,10 @@ exports.MessageModule = MessageModule = __decorate([
     (0, common_1.Module)({
         controllers: [message_controller_1.MessageController],
         providers: [
-            in_memory_message_repository_1.InMemoryMessageRepository,
+            message_dynamo_repository_1.MessageDynamoRepository,
             {
                 provide: message_repository_token_1.MESSAGE_REPOSITORY,
-                useExisting: in_memory_message_repository_1.InMemoryMessageRepository,
+                useExisting: message_dynamo_repository_1.MessageDynamoRepository,
             },
             create_message_usecase_1.CreateMessageUseCase,
             get_message_by_id_usecase_1.GetMessageByIdUseCase,
