@@ -30,6 +30,7 @@ Desenvolvida com **Node.js + NestJS**, seguindo princípios de:
 
 - **Clean Architecture**
 - **Arquitetura Hexagonal (Ports & Adapters)**
+- **Persistência NoSQL (DynamoDB)**
 - **Validações explícitas**
 - **Autenticação JWT**
 - **Logs estruturados**
@@ -46,6 +47,13 @@ A API foi desenhada para ser **escalável, previsível e testável**, com **100%
 - **NestJS**
 - **TypeScript**
 - **JWT (JSON Web Token)**
+- **AWS SDK v3 (DynamoDB)**
+
+## 🛠️ Infraestrtutura Local
+
+- **Docker & Docker Compose**
+- **LocalStack (Simulação AWS)**
+- **DynamoDB Local**
 
 ### Testes
 - **Jest**
@@ -119,6 +127,67 @@ Endpoint utilizado para verificar se a API está ativa e respondendo corretament
 | Método | Caminho   | Descrição           | Autenticação | Retorno |
 |--------|-----------|---------------------|--------------|---------|
 | GET    | `/health` | Health check da API | Não          | `{"status":"ok","timestamp":"2026-02-09T01:07:54.694Z"}` |
+
+## 🚀 Como Executar o Projeto (Local & Docker)
+Este projeto utiliza Docker para simular o banco de dados DynamoDB localmente.
+
+# **1. Instalar Dependências**
+
+```bash
+npm install
+```
+
+# **2. Subir a Infraestrutura (Banco de Dados)**
+Na raiz do projeto, inicie o DynamoDB Local e o painel administrativo:
+
+```bash
+docker compose up -d
+```
+
+**API disponível em:**
+
+* **DynamoDB:** Rodando em `http://localhost:8000`
+* **Admin Panel:** Acessível em `http://localhost:8001` (Use para visualizar os dados!)
+
+# **3. Criar a Tabela (Setup Obrigatório)**
+O banco local inicia vazio. Você deve criar a tabela Messages antes de rodar a API.
+
+**Opção 1: Via Interface Visual (Recomendado)**
+
+- 1. Acesse `http://localhost:8001`
+- 2. Clique em **Create Table**
+- 3. Table Name: **Messages** 
+- 4. Hash Key (Partition Key): **id (String)**
+
+**Opção 2: Via Terminal**
+
+```bash
+aws dynamodb create-table \
+    --table-name Messages \
+    --attribute-definitions AttributeName=id,AttributeType=S \
+    --key-schema AttributeName=id,KeyType=HASH \
+    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --endpoint-url http://localhost:8000
+```
+
+# **4. Rodar a Aplicação**
+
+```bash
+npm run start:dev
+```
+
+## 🧪 Testes Automatizados
+
+1. **Testes Unitários**
+Focam na lógica de domínio e regras de negócio.
+
+* **Quantidade:** 30 testes.
+* **Cobertura:** 100% (Statements, Branches, Functions, Lines).
+
+```bash
+npm test
+npm run test:cov
+```
 
 ## Endpoints da API
 
@@ -216,36 +285,6 @@ Exemplo de log:
 }
 ```
 ---
-
-## 🚀 Como Executar o Projeto
-
-```bash
-# Instalar dependências
-npm install
-
-# Rodar a aplicação
-npm run start:dev
-```
-
-**API disponível em:**
-
-```
-http://localhost:3000
-```
----
-
-## 🧪 Testes Automatizados
-
-1. **Testes Unitários**
-Focam na lógica de domínio e regras de negócio.
-
-* **Quantidade:** 30 testes.
-* **Cobertura:** 100% (Statements, Branches, Functions, Lines).
-
-```bash
-npm test
-npm run test:cov
-```
 
 2. **Testes End-to-End (E2E)**
 Validam o fluxo completo da API, simulando o consumidor final com Supertest.
